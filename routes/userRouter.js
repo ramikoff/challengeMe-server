@@ -21,6 +21,7 @@ import {
 const userRouter = Router();
 
 userRouter.post("/auth/signup", userSignup);
+userRouter.post("/auth/login", login);
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUserByID);
