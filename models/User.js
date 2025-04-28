@@ -1,11 +1,46 @@
 import { Schema, model, Types } from "mongoose";
+import { emailRegex } from "../utils/regex.js";
+
+const FavoriteListEntry = new Schema({
+  challengeRefId: {
+    type: Schema.Types.ObjectId,
+    ref: "challenge",
+  },
+  status: {
+    type: String,
+    enum: ["active", "pending", "favoritelist"],
+    default: "favoritelist",
+  },
+});
+
+const ActiveChallengesEntry = new Schema({
+  challengeRefId: {
+    type: Schema.Types.ObjectId,
+    ref: "challenge",
+  },
+  status: {
+    type: String,
+    enum: ["in-progress", "completed", "failed"],
+    default: "in-progress",
+  },
+  startDate: {
+    type: Date,
+    default: Date.now,
+  },
+  progress: {
+    type: Number,
+    default: 0,
+  },
+});
 
 const userSchema = new Schema({
   email: {
     type: String,
-    required: true,
+    match: [emailRegex, "Please provide a valid email address."],
+    unique: [true, "User already exists"],
+    required: [true, "Please provide an email address"],
   },
-  passwordHash: {
+  password: {
     type: String,
     required: true,
   },
@@ -41,18 +76,8 @@ const userSchema = new Schema({
       default: 0,
     },
   },
-  favoriteChallenges: [
-    {
-      type: Types.ObjectId,
-      ref: "Challenge",
-    },
-  ],
-  activeChallenges: [
-    {
-      type: Types.ObjectId,
-      ref: "Challenge",
-    },
-  ],
+  favoriteList: [FavoriteListEntry],
+  activeChallenges: [ActiveChallengesEntry],
 });
 
 const User = model("user", userSchema);

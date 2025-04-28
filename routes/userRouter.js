@@ -1,19 +1,31 @@
 import { Router } from "express";
 import User from "../models/User.js";
+import {
+  getUserByID,
+  getAllUsers,
+  createUser,
+  updateUserByID,
+  deleteUserByID,
+  addChallengeToFavoriteList,
+  updateChallengeStatus,
+  deleteChallengeFromFavoriteList,
+} from "../controllers/userControllers.js";
+import authenticate from "../middlewares/authenticate.js";
+import {
+  login,
+  userSignup,
+  logout,
+  getMe,
+} from "../controllers/authControllers.js";
 
 const userRouter = Router();
 
-userRouter.get("/", async (req, res) => {
-  console.log("GET /users called");
-  const users = await User.find();
-  res.json({ data: users });
-});
+userRouter.post("/auth/signup", userSignup);
 
-userRouter.post("/", async (req, res) => {
-  console.log("POST /users called");
-  console.log("Request body:", req.body);
-  const user = await User.create(req.body);
-  res.json({ data: user });
-});
+userRouter.get("/", getAllUsers);
+userRouter.get("/:id", getUserByID);
+
+userRouter.put("/:id", updateUserByID);
+userRouter.delete("/:id", deleteUserByID);
 
 export default userRouter;
