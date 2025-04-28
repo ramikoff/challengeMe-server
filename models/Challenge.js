@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const challengeSchema = new Schema({
   challengeTitle: String,
@@ -14,7 +14,7 @@ const challengeSchema = new Schema({
     coordinates: [Number, Number],
   },
   challengeReward: Number,
-  createdBy: ObjectId,
+  createdBy: Types.ObjectId,
   active: Boolean,
   duration: Number,
 });

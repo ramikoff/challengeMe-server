@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 const userSchema = new Schema({
   email: {
@@ -32,11 +32,27 @@ const userSchema = new Schema({
     type: String,
   },
   stats: {
-    challengesCompleted: Number,
-    totalCredits: Number,
+    challengesCompleted: {
+      type: Number,
+      default: 0,
+    },
+    totalCredits: {
+      type: Number,
+      default: 0,
+    },
   },
-  favoriteChallenges: [],
-  activeChallenges: [],
+  favoriteChallenges: [
+    {
+      type: Types.ObjectId,
+      ref: "Challenge",
+    },
+  ],
+  activeChallenges: [
+    {
+      type: Types.ObjectId,
+      ref: "Challenge",
+    },
+  ],
 });
 
 const User = model("user", userSchema);
