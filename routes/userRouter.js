@@ -22,6 +22,7 @@ const userRouter = Router();
 
 userRouter.post("/auth/signup", userSignup);
 userRouter.post("/auth/login", login);
+userRouter.get("/me", authenticate, getMe);
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUserByID);
