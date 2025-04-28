@@ -2,13 +2,26 @@ import express, { Router } from "express";
 import cors from "cors";
 import ErrorResponse from "./utils/ErrorResponse.js";
 import { userRouter, challengeRouter } from "./routes/index.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 console.log("Initializing middleware...");
-app.use(express.json());
+app.use(express.json(), cookieParser());
 
-app.use(cors());
+const whitelist = ["http://localhost:5173"];
+const corsOptions = {
+  credentials: true,
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.get("/", async (req, res) => {
   const dbResponse = await mongoose.connection.db.admin().ping();
