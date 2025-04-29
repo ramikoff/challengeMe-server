@@ -39,7 +39,11 @@ const challengeSchema = new Schema({
     type: Number,
     required: true,
   },
-  createdBy: Types.ObjectId,
+  createdBy: {
+    type: Types.ObjectId,
+    ref: "user",
+    required: true,
+  },
   active: Boolean,
   duration: Number,
 });

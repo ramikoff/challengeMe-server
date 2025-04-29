@@ -15,10 +15,18 @@ const getChallengeByID = async (req, res) => {
 };
 
 const createChallenge = async (req, res) => {
-  const challenge = await Challenge.create(req.body);
-  res
-    .status(201)
-    .json({ message: "Challenge created successfully", data: challenge });
+  try {
+    const challenge = await Challenge.create({
+      ...req.body,
+      createdBy: req.user._id,
+    });
+
+    res
+      .status(201)
+      .json({ message: "Challenge created successfully", data: challenge });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 const updateChallengeByID = async (req, res) => {

@@ -1,16 +1,18 @@
 import { Router } from "express";
 import Challenge from "../models/Challenge.js";
+import {
+  getAllChallenges,
+  getChallengeByID,
+  createChallenge,
+  updateChallengeByID,
+  deleteChallengeByID,
+} from "../controllers/challengeControllers.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const challengeRouter = Router();
 
-challengeRouter.get("/", async (req, res) => {
-  const challenges = await Challenge.find();
-  res.json({ data: challenges });
-});
+challengeRouter.get("/", getAllChallenges);
 
-challengeRouter.post("/", async (req, res) => {
-  const challenge = await Challenge.create(req.body);
-  res.json({ data: challenge });
-});
+challengeRouter.post("/", authenticate, createChallenge);
 
 export default challengeRouter;
