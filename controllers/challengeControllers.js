@@ -41,9 +41,9 @@ const updateChallengeByID = async (req, res) => {
 
 const deleteChallengeByID = async (req, res) => {
   const { id } = req.params;
-  const challenge = await User.findByIdAndDelete(id);
-  if (!challenge) throw new ErrorResponse("user not found", 404);
-  res.json({ message: "user deleted successfully", data: challenge });
+  const challenge = await Challenge.findByIdAndDelete(id);
+  if (!challenge) throw new ErrorResponse("challenge not found", 404);
+  res.json({ message: "challenge deleted successfully", data: challenge });
 };
 
 export {

@@ -31,9 +31,30 @@ const challengeSchema = new Schema({
     required: true,
   },
   location: {
-    type: String,
-    coordinates: [Number, Number],
-    required: true,
+    type: {
+      type: String,
+      enum: ["Point", "Route"],
+      required: true,
+    },
+    coordinates: {
+      type: [[Number]],
+      required: true,
+      validate: {
+        validator: function (value) {
+          if (this.location.type === "Point") {
+            return value.length === 1;
+          }
+          if (this.location.type === "Route") {
+            return value.length === 2;
+          }
+          return false;
+        },
+        message: (props) =>
+          `Invalid coordinates for type "${props.value.type}". Expected ${
+            props.value.type === "Point" ? "1 point" : "2 points"
+          }.`,
+      },
+    },
   },
   challengeReward: {
     type: Number,
@@ -44,8 +65,10 @@ const challengeSchema = new Schema({
     ref: "user",
     required: true,
   },
-  active: Boolean,
-  duration: Number,
+  duration: {
+    type: Number,
+    required: true,
+  },
 });
 
 const Challenge = model("challenge", challengeSchema);

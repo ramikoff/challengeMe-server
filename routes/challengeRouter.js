@@ -1,5 +1,5 @@
 import { Router } from "express";
-import Challenge from "../models/Challenge.js";
+
 import {
   getAllChallenges,
   getChallengeByID,
@@ -14,5 +14,7 @@ const challengeRouter = Router();
 challengeRouter.get("/", getAllChallenges);
 
 challengeRouter.post("/", authenticate, createChallenge);
+
+challengeRouter.delete("/", deleteChallengeByID);
 
 export default challengeRouter;
