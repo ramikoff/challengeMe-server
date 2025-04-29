@@ -12,7 +12,7 @@ app.use(express.json(), cookieParser());
 
 const whitelist = [
   "http://localhost:5173",
-  "https://challengemerpb.netlify.app/",
+  "https://challengemerpb.netlify.app",
 ];
 const corsOptions = {
   credentials: true,
