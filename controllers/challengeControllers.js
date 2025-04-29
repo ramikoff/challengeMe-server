@@ -1,4 +1,3 @@
-import User from "../models/User.js";
 import Challenge from "../models/Challenge.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 
