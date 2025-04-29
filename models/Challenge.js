@@ -1,19 +1,44 @@
 import { Schema, model, Types } from "mongoose";
 
 const challengeSchema = new Schema({
-  challengeTitle: String,
-  challengeDescription: String,
-  shortDescription: String,
-  challengeCategory: String,
-  challengeSubCategory: String,
+  challengeTitle: {
+    type: String,
+    required: true,
+  },
+  challengeDescription: {
+    type: String,
+    required: true,
+  },
+  shortDescription: {
+    type: String,
+    required: true,
+  },
+  challengeCategory: {
+    type: String,
+    required: true,
+  },
+  challengeSubCategory: {
+    type: String,
+    required: true,
+  },
   challengeDetailsUrl: String,
-  fitnessLevel: String,
-  frequence: String,
+  fitnessLevel: {
+    type: String,
+    required: true,
+  },
+  frequence: {
+    type: String,
+    required: true,
+  },
   location: {
     type: String,
     coordinates: [Number, Number],
+    required: true,
   },
-  challengeReward: Number,
+  challengeReward: {
+    type: Number,
+    required: true,
+  },
   createdBy: Types.ObjectId,
   active: Boolean,
   duration: Number,
