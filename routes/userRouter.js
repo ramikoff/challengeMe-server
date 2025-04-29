@@ -7,6 +7,7 @@ import {
   updateUserByID,
   deleteUserByID,
   addChallengeToFavoriteList,
+  addChallengeToActiveChallenges,
   updateChallengeStatus,
   deleteChallengeFromFavoriteList,
 } from "../controllers/userControllers.js";
@@ -24,6 +25,9 @@ userRouter.post("/auth/signup", userSignup);
 userRouter.post("/auth/login", login);
 userRouter.get("/me", authenticate, getMe);
 userRouter.post("/me", authenticate, getMe);
+
+userRouter.post("/:id/favoriteList/:challengeId", addChallengeToFavoriteList);
+userRouter.post("/:id/activeList/:challengeId", addChallengeToActiveChallenges);
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUserByID);

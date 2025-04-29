@@ -8,7 +8,7 @@ const FavoriteListEntry = new Schema({
   },
   status: {
     type: String,
-    enum: ["active", "pending", "favoritelist"],
+    enum: ["active", "favoritelist"],
     default: "favoritelist",
   },
 });
