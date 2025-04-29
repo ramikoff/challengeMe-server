@@ -3,6 +3,7 @@ import cors from "cors";
 import ErrorResponse from "./utils/ErrorResponse.js";
 import { userRouter, challengeRouter } from "./routes/index.js";
 import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
 
 const app = express();
 
