@@ -10,7 +10,10 @@ const app = express();
 console.log("Initializing middleware...");
 app.use(express.json(), cookieParser());
 
-const whitelist = ["http://localhost:5173"];
+const whitelist = [
+  "http://localhost:5173",
+  "https://challengemerpb.netlify.app/",
+];
 const corsOptions = {
   credentials: true,
   origin: function (origin, callback) {
@@ -41,6 +44,10 @@ app.use("/api/v1", v1Router);
 
 app.use("/*splat", (req, res) => {
   throw new ErrorResponse(`Check the route. You used ${req.originalUrl}`, 404);
+});
+
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end();
 });
 
 app.use((err, req, res, next) => {
