@@ -8,7 +8,7 @@ const FavoriteListEntry = new Schema({
   },
   status: {
     type: String,
-    enum: ["active", "pending", "favoritelist"],
+    enum: ["active", "favoritelist"],
     default: "favoritelist",
   },
 });
@@ -39,10 +39,12 @@ const userSchema = new Schema({
     match: [emailRegex, "Please provide a valid email address."],
     unique: [true, "User already exists"],
     required: [true, "Please provide an email address"],
+    index: true,
   },
   password: {
     type: String,
     required: true,
+    select: false,
   },
   location: [Number, Number],
   age: {

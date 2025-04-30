@@ -5,7 +5,10 @@ import User from "../models/User.js";
 import ErrorResponse from "../utils/ErrorResponse.js";
 
 const createToken = (userId) => {
-  return jwt.sign({ _id: userId }, process.env.SECRET, { expiresIn: "1h" }); // 1 час
+  return jwt.sign({ _id: userId }, process.env.SECRET, {
+    expiresIn: "1h",
+    algorithm: "HS256",
+  });
 };
 
 const setAuthCookie = (res, token) => {
@@ -27,7 +30,7 @@ const userSignup = async (req, res) => {
   if (emailInUse) throw new ErrorResponse("Email already in use", 409);
 
   // passw0rd hashing
-  const salt = await bcrypt.genSalt(15);
+  const salt = await bcrypt.genSalt(10);
   const hashedPW = await bcrypt.hash(password, salt);
 
   const user = await User.create({ ...req.body, password: hashedPW });
@@ -45,18 +48,34 @@ const userSignup = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email }).select("+password").lean();
-  if (!user) throw new ErrorResponse("Incorrect credentials", 401);
+  if (!email || !password) {
+    throw new ErrorResponse("Please provide email and password", 400);
+  }
 
-  const match = await bcrypt.compare(password, user.password);
-  if (!match) throw new ErrorResponse("Incorrect credentials", 401);
+  try {
+    const user = await User.findOne({ email }).select("+password").lean();
+    if (!user) throw new ErrorResponse("Incorrect credentials", 401);
 
-  const token = createToken(user._id);
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) throw new ErrorResponse("Incorrect credentials", 401);
 
-  delete user.password;
+    const token = createToken(user._id);
 
-  setAuthCookie(res, token);
-  res.json({ message: "Logged in", token, data: user });
+    delete user.password;
+
+    setAuthCookie(res, token);
+    res.status(200).json({
+      message: "Logged in successfully",
+      token,
+      user: {
+        _id: user._id,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    throw new ErrorResponse("Server error", 500);
+  }
 };
 
 const logout = (req, res) => {

@@ -20,11 +20,6 @@ const getUserByID = async (req, res) => {
   res.json({ data: user });
 };
 
-const createUser = async (req, res) => {
-  const user = await User.create(req.body);
-  res.status(201).json({ message: "User created successfully", data: user });
-};
-
 const updateUserByID = async (req, res) => {
   const { id } = req.params;
   const user = await User.findByIdAndUpdate(id, req.body, {
@@ -59,7 +54,7 @@ const addChallengeToFavoriteList = async (req, res) => {
     throw new ErrorResponse("Challenge already on favorite list", 409);
   }
 
-  user.readingList.push({ bookRefId: bookId });
+  user.favoriteList.push({ challengeRefId: challengeId });
 
   await user.save();
 
@@ -69,12 +64,38 @@ const addChallengeToFavoriteList = async (req, res) => {
   });
 };
 
+const addChallengeToActiveChallenges = async (req, res) => {
+  const { id, challengeId } = req.params;
+  const challengeExists = await Challenge.exists({ _id: challengeId });
+  if (!challengeExists) throw new ErrorResponse("Challenge not found", 404);
+  const user = await User.findById(id);
+  if (!user) throw new ErrorResponse("User not found", 404);
+  if (
+    user.activeChallenges.find(
+      (challenge) => challenge.challengeRefId.toString() === challengeId
+    )
+  ) {
+    throw new ErrorResponse("Challenge already in active challenges", 409);
+  }
+  user.activeChallenges.push({
+    challengeRefId: challengeId,
+    status: "in-progress",
+    startDate: new Date(),
+    progress: 0,
+  });
+  await user.save();
+  res.json({
+    message: `Successfully added challenge to active challenges`,
+    data: user,
+  });
+};
+
 const updateChallengeStatus = async (req, res) => {
   const { id, challengeId } = req.params;
   const { status } = req.body;
 
   const challengeExists = await Challenge.exists({ _id: challengeId });
-  if (!challengeExists) throw new ErrorResponse("Book not found", 404);
+  if (!challengeExists) throw new ErrorResponse("Challenge not found", 404);
 
   const user = await User.findOneAndUpdate(
     { _id: id, "favoriteList.challengeRefId": challengeId },
@@ -108,10 +129,10 @@ const deleteChallengeFromFavoriteList = async (req, res) => {
 export {
   getUserByID,
   getAllUsers,
-  createUser,
   updateUserByID,
   deleteUserByID,
   addChallengeToFavoriteList,
+  addChallengeToActiveChallenges,
   updateChallengeStatus,
   deleteChallengeFromFavoriteList,
 };
