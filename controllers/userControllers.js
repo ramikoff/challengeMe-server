@@ -20,11 +20,6 @@ const getUserByID = async (req, res) => {
   res.json({ data: user });
 };
 
-const createUser = async (req, res) => {
-  const user = await User.create(req.body);
-  res.status(201).json({ message: "User created successfully", data: user });
-};
-
 const updateUserByID = async (req, res) => {
   const { id } = req.params;
   const user = await User.findByIdAndUpdate(id, req.body, {
@@ -134,7 +129,6 @@ const deleteChallengeFromFavoriteList = async (req, res) => {
 export {
   getUserByID,
   getAllUsers,
-  createUser,
   updateUserByID,
   deleteUserByID,
   addChallengeToFavoriteList,

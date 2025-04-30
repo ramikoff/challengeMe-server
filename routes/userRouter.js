@@ -1,9 +1,8 @@
 import { Router } from "express";
-import User from "../models/User.js";
+
 import {
   getUserByID,
   getAllUsers,
-  createUser,
   updateUserByID,
   deleteUserByID,
   addChallengeToFavoriteList,
@@ -26,13 +25,25 @@ userRouter.post("/auth/login", login);
 userRouter.get("/me", authenticate, getMe);
 userRouter.post("/me", authenticate, getMe);
 
-userRouter.post("/:id/favoriteList/:challengeId", addChallengeToFavoriteList);
-userRouter.post("/:id/activeList/:challengeId", addChallengeToActiveChallenges);
+userRouter.post(
+  "/:id/favoriteList/:challengeId",
+  authenticate,
+  addChallengeToFavoriteList
+);
+userRouter.post(
+  "/:id/activeList/:challengeId",
+  authenticate,
+  addChallengeToActiveChallenges
+);
+userRouter.delete(
+  "/:id/favoriteList/:challengeId",
+  deleteChallengeFromFavoriteList
+);
 
 userRouter.get("/", getAllUsers);
 userRouter.get("/:id", getUserByID);
 
-userRouter.put("/:id", updateUserByID);
-userRouter.delete("/:id", deleteUserByID);
+userRouter.put("/:id", authenticate, updateUserByID);
+userRouter.delete("/:id", authenticate, deleteUserByID);
 
 export default userRouter;
