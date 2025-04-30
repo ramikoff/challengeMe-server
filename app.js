@@ -50,6 +50,8 @@ app.get("/favicon.ico", (req, res) => {
   res.status(204).end();
 });
 
+mongoose.set("debug", true);
+
 app.use((err, req, res, next) => {
   console.log("Error handler called:", err.message);
   const statusCode = err.statusCode || 500;
