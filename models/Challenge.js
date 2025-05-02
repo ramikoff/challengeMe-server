@@ -22,13 +22,11 @@ const challengeSchema = new Schema({
     required: true,
   },
   challengeDetailsUrl: String,
-  fitnessLevel: {
+  standardLevel: {
     type: String,
-    required: true,
   },
   frequence: {
     type: String,
-    required: true,
   },
   location: {
     type: {
