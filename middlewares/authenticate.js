@@ -8,7 +8,7 @@ const authenticate = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (authorization) {
-    token = authorization.split(" ")[1];
+    token = authorization?.split(" ")[1];
   }
   if (!token) throw new ErrorResponse("Not authenticated", 401);
 
