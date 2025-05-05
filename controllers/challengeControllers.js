@@ -15,6 +15,8 @@ const getChallengeByID = async (req, res) => {
 
 const createChallenge = async (req, res) => {
   try {
+    console.log("Request body:", req.body);
+    console.log("Request headers:", req.headers);
     const challenge = await Challenge.create({
       ...req.body,
       createdBy: req.user._id,

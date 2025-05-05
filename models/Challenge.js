@@ -35,25 +35,40 @@ const challengeSchema = new Schema({
       required: true,
     },
     coordinates: {
-      type: [[Number]],
+      type: Array,
       required: true,
       validate: {
         validator: function (value) {
           if (this.location.type === "Point") {
-            return value.length === 1;
+            // Za Point treba [[lat, lng]]
+            return (
+              Array.isArray(value) &&
+              value.length === 1 &&
+              Array.isArray(value[0]) &&
+              value[0].length === 2 &&
+              typeof value[0][0] === "number" &&
+              typeof value[0][1] === "number"
+            );
           }
           if (this.location.type === "Route") {
-            return value.length === 2;
+            return (
+              Array.isArray(value) &&
+              value.length === 4 &&
+              value.every((coord) => typeof coord === "number")
+            );
           }
           return false;
         },
         message: (props) =>
           `Invalid coordinates for type "${props.value.type}". Expected ${
-            props.value.type === "Point" ? "1 point" : "2 points"
+            props.value.type === "Point"
+              ? "one point [[lat, lng]]"
+              : "four coordinates [lat1, lng1, lat2, lng2]"
           }.`,
       },
     },
   },
+
   challengeReward: {
     type: Number,
     required: true,
