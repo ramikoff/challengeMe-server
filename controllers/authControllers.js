@@ -6,7 +6,7 @@ import ErrorResponse from "../utils/ErrorResponse.js";
 
 const createToken = (userId) => {
   return jwt.sign({ _id: userId }, process.env.SECRET, {
-    expiresIn: "1h",
+    expiresIn: "72h",
     algorithm: "HS256",
   });
 };
