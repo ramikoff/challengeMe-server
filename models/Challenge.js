@@ -82,6 +82,9 @@ const challengeSchema = new Schema({
     type: Number,
     required: true,
   },
+  imageUrl: {
+    type: String,
+  },
 });
 
 const Challenge = model("challenge", challengeSchema);
