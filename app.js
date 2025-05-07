@@ -1,9 +1,10 @@
-import express, { Router } from "express";
-import cors from "cors";
 import ErrorResponse from "./utils/ErrorResponse.js";
-import { userRouter, challengeRouter } from "./routes/index.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { Router } from "express";
 import mongoose from "mongoose";
+import openaiRouter from "./routes/openaiRouter.js";
+import { challengeRouter, userRouter } from "./routes/index.js";
 
 const app = express();
 
@@ -38,6 +39,8 @@ const v1Router = Router();
 
 v1Router.use("/users", userRouter);
 v1Router.use("/challenges", challengeRouter);
+
+app.use("/api/openai", openaiRouter);
 
 console.log("Routes initialized successfully.");
 app.use("/api/v1", v1Router);
