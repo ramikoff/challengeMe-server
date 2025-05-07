@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
 const challengeSchema = new Schema({
   challengeTitle: {
@@ -79,7 +79,7 @@ const challengeSchema = new Schema({
     required: true,
   },
   duration: {
-    type: Number,
+    type: String,
     required: true,
   },
   imageUrl: {

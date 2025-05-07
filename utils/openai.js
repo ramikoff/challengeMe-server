@@ -18,12 +18,13 @@ Using the following data:
 
 Generate a challenge as a JSON object containing:
 
-- title (maximum 26 characters)
+- title (must be between 10 and 26 characters long, but not exceed 26 characters)
 - shortDescription (a brief summary of the challenge)
 - description (a detailed explanation of the challenge, considering location, activity type, terrain, accessibility, equipment, physical requirements, etc.)
 - frequence (daily, weekly, monthly, yearly — based on challenge nature)
 - standardLevel (Easy, Medium, Difficult — based on category, subcategory, and location)
 - credits (001 to 1000 points — based on difficulty and complexity)
+- duration (How long the challenge can last)
 
 Return only the JSON object.
   `;
