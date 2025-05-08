@@ -4,6 +4,10 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+const openaiDall = new OpenAI({
+  apiKey: process.env.DALL_E_API_KEY,
+});
+
 export async function generateChallengeFields({
   category,
   subcategory,
@@ -25,6 +29,7 @@ Generate a challenge as a JSON object containing:
 - standardLevel (Easy, Medium, Difficult — based on category, subcategory, and location)
 - credits (001 to 1000 points — based on difficulty and complexity)
 - duration (How long the challenge can last)
+- imageUrl (a URL string pointing to an illustrative image for this challenge )
 
 Return only the JSON object.
   `;
@@ -42,9 +47,21 @@ Return only the JSON object.
 
   try {
     const content = response.choices[0].message.content;
-    return JSON.parse(content);
+    const challengeData = JSON.parse(content);
+
+    const imagePrompt = `${category} ${subcategory} challenge in ${location}`;
+    const imageResponse = await openaiDall.images.generate({
+      prompt: imagePrompt,
+      n: 1,
+      size: "512x512",
+    });
+
+    const imageUrl = imageResponse.data[0].url;
+    challengeData.imageUrl = imageUrl;
+
+    return challengeData;
   } catch (err) {
-    console.error("Parsing error:", err);
+    console.error("Error generating challenge or image:", err);
     throw err;
   }
 }
