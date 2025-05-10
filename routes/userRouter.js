@@ -9,6 +9,7 @@ import {
   addChallengeToActiveChallenges,
   updateChallengeStatus,
   deleteChallengeFromFavoriteList,
+  updateActiveChallengeStatus,
 } from "../controllers/userControllers.js";
 import authenticate from "../middlewares/authenticate.js";
 import {
@@ -35,6 +36,13 @@ userRouter.post(
   authenticate,
   addChallengeToActiveChallenges
 );
+
+userRouter.post(
+  "/:id/activeList/:challengeId/complete",
+  authenticate,
+  updateActiveChallengeStatus
+);
+
 userRouter.delete(
   "/:id/favoriteList/:challengeId",
   deleteChallengeFromFavoriteList

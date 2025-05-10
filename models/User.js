@@ -20,8 +20,8 @@ const ActiveChallengesEntry = new Schema({
   },
   status: {
     type: String,
-    enum: ["in-progress", "completed", "failed"],
-    default: "in-progress",
+    enum: ["pending", "in-progress", "completed", "failed"],
+    default: "pending",
   },
   startDate: {
     type: Date,
