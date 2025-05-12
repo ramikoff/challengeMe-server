@@ -1,4 +1,12 @@
 import OpenAI from "openai";
+import axios from "axios";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -8,6 +16,30 @@ const openaiDall = new OpenAI({
   apiKey: process.env.DALL_E_API_KEY,
 });
 
+async function uploadToCloudinaryFromUrl(imageUrl) {
+  try {
+    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: "challenge-me-images",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      );
+
+      uploadStream.end(response.data);
+    });
+  } catch (error) {
+    console.error("Greška prilikom slanja slike na Cloudinary:", error);
+    throw error;
+  }
+}
+
 export async function generateChallengeFields({
   category,
   subcategory,
@@ -16,9 +48,9 @@ export async function generateChallengeFields({
   const prompt = `
 Using the following data:
 
-- Category: {category}
-- Subcategory: {subcategory}
-- Location: {location}
+- Category: ${category}
+- Subcategory: ${subcategory}
+- Location: ${location}
 
 Generate a challenge as a JSON object containing:
 
@@ -32,7 +64,7 @@ Generate a challenge as a JSON object containing:
 - imageUrl (a URL string pointing to an illustrative image for this challenge )
 
 Return only the JSON object.
-  `;
+`;
 
   const filledPrompt = prompt
     .replace("{category}", category)
@@ -49,15 +81,18 @@ Return only the JSON object.
     const content = response.choices[0].message.content;
     const challengeData = JSON.parse(content);
 
-    const imagePrompt = `${category} ${subcategory} challenge set in ${location}, comic style, cel-shaded and without any letters`;
+    const imagePrompt = `${category} ${subcategory} challenge in ${location},  cartoon style, cel-shaded, no text, realistic`;
     const imageResponse = await openaiDall.images.generate({
       prompt: imagePrompt,
       n: 1,
       size: "512x512",
     });
 
-    const imageUrl = imageResponse.data[0].url;
-    challengeData.imageUrl = imageUrl;
+    const dallImageUrl = imageResponse.data[0].url;
+
+    const cloudinaryImageUrl = await uploadToCloudinaryFromUrl(dallImageUrl);
+
+    challengeData.imageUrl = cloudinaryImageUrl;
 
     return challengeData;
   } catch (err) {
