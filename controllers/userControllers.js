@@ -107,6 +107,34 @@ const updateChallengeStatus = async (req, res) => {
   res.json({ message: `Successfully updated status to ${status}`, data: user });
 };
 
+const updateActiveChallengeStatus = async (req, res) => {
+  const { id, challengeId } = req.params;
+  const { status } = req.body;
+
+  const challengeExists = await Challenge.exists({ _id: challengeId });
+  if (!challengeExists) throw new ErrorResponse("Challenge not found", 404);
+
+  const update = {
+    $set: {
+      "activeChallenges.$.status": status,
+    },
+  };
+
+  if (status === "completed") {
+    update.$inc = { "stats.challengesCompleted": 1 };
+  }
+
+  const user = await User.findOneAndUpdate(
+    { _id: id, "activeChallenges.challengeRefId": challengeId },
+    update,
+    { new: true, runValidators: true }
+  );
+
+  if (!user) throw new ErrorResponse("User not found", 404);
+
+  res.json({ message: `Successfully updated status to ${status}`, data: user });
+};
+
 const deleteChallengeFromFavoriteList = async (req, res) => {
   const { id, challengeId } = req.params;
 
@@ -135,4 +163,5 @@ export {
   addChallengeToActiveChallenges,
   updateChallengeStatus,
   deleteChallengeFromFavoriteList,
+  updateActiveChallengeStatus,
 };
