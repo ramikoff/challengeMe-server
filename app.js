@@ -5,6 +5,10 @@ import express, { Router } from "express";
 import mongoose from "mongoose";
 import openaiRouter from "./routes/openaiRouter.js";
 import { challengeRouter, userRouter } from "./routes/index.js";
+import upload from "./config/multer.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { uploadProfileImage } from "./controllers/uploadController.js";
 
 const app = express();
 
@@ -28,10 +32,28 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 app.get("/", async (req, res) => {
   const dbResponse = await mongoose.connection.db.admin().ping();
   if (dbResponse.ok !== 1) throw new ErrorResponse("DB not connected", 503);
   res.json({ message: "Running", dbResponse });
+});
+
+app.post("/file-upload", upload.single("image"), async (req, res) => {
+  console.log(req.file);
+  if (!req.file) {
+    return next(new ErrorResponse("No file uploaded", 400));
+  }
+
+  res.json({
+    message: "File uploaded successfully!",
+    file: req.file,
+    location: req.file.path, // ← вот это и будет Cloudinary URL
+  });
 });
 
 console.log("Initializing routes...");

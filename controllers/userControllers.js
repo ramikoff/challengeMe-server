@@ -10,11 +10,15 @@ const getAllUsers = async (req, res) => {
 const getUserByID = async (req, res) => {
   const { id } = req.params;
   const user = await User.findById(id)
-    .populate("favoriteList.challengeRefId", "challengeTitle challengeCategory")
+    .populate(
+      "favoriteList.challengeRefId",
+      "challengeTitle challengeCategory challengeSubCategory standardLevel"
+    )
     .populate(
       "activeChallenges.challengeRefId",
-      "challengeTitle challengeCategory"
+      "challengeTitle challengeCategory challengeSubCategory standardLevel"
     )
+
     .lean();
   if (!user) throw new ErrorResponse("User not found", 404);
   res.json({ data: user });
