@@ -11,6 +11,7 @@ import {
   deleteChallengeFromFavoriteList,
   updateActiveChallengeStatus,
 } from "../controllers/userControllers.js";
+import { uploadProfileImage } from "../controllers/uploadController.js";
 import authenticate from "../middlewares/authenticate.js";
 import {
   login,
@@ -18,6 +19,7 @@ import {
   logout,
   getMe,
 } from "../controllers/authControllers.js";
+import upload from "../middlewares/upload.js";
 
 const userRouter = Router();
 
@@ -25,6 +27,11 @@ userRouter.post("/auth/signup", userSignup);
 userRouter.post("/auth/login", login);
 userRouter.get("/me", authenticate, getMe);
 userRouter.post("/me", authenticate, getMe);
+userRouter.post(
+  "/:id/profile-picture",
+  upload.single("image"),
+  uploadProfileImage
+);
 
 userRouter.post(
   "/:id/favoriteList/:challengeId",

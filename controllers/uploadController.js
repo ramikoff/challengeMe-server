@@ -3,7 +3,7 @@ import User from "../models/User.js";
 export const uploadProfileImage = async (req, res) => {
   try {
     // Validate file upload
-    if (!req.file || !req.file.path) {
+    if (!req.file || !req.file.secure_url) {
       return res.status(400).json({
         success: false,
         message: "No image uploaded",
@@ -11,7 +11,7 @@ export const uploadProfileImage = async (req, res) => {
     }
 
     // Determine user ID
-    const userId = req.user?.id || req.body.userId;
+    const userId = req.params.id;
     if (!userId) {
       return res.status(400).json({
         success: false,
@@ -24,7 +24,7 @@ export const uploadProfileImage = async (req, res) => {
       userId,
       {
         $set: {
-          profilePictureUrl: req.file.path,
+          profilePictureUrl: req.file.secure_url,
         },
       },
       {
