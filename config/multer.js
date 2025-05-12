@@ -1,12 +1,13 @@
 import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
+import CloudinaryStorage from "../services/cloudinary.js";
+
 import multer from "multer";
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "challenges", // Папка в Cloudinary, куда будут загружаться изображения
-    allowed_formats: ["jpg", "jpeg", "png"], // Разрешённые форматы файлов
+    folder: "challenge-me-images",
+    allowed_formats: ["jpg", "jpeg", "png"],
   },
 });
 
