@@ -85,7 +85,6 @@ Return only the JSON object.
     const imageResponse = await openaiDall.images.generate({
       prompt: imagePrompt,
       n: 1,
-      size: "512x512",
     });
 
     const dallImageUrl = imageResponse.data[0].url;
