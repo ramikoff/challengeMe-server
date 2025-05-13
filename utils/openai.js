@@ -81,11 +81,11 @@ Return only the JSON object.
     const content = response.choices[0].message.content;
     const challengeData = JSON.parse(content);
 
-    const imagePrompt = `${category} ${subcategory} challenge in ${location},  cartoon style, cel-shaded, no text, realistic, landscape format, aspect ratio 2:1`;
+    const imagePrompt = `${category} ${subcategory} challenge in ${location},  cartoon style, cel-shaded, no text, realistic`;
     const imageResponse = await openaiDall.images.generate({
       prompt: imagePrompt,
       n: 1,
-      size: "600x300",
+      size: "512x512",
     });
 
     const dallImageUrl = imageResponse.data[0].url;
